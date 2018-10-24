@@ -3,6 +3,7 @@ import org.junit.Test;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 public class JenkinsTest {
 
@@ -34,11 +35,20 @@ public class JenkinsTest {
                 then().statusCode(403);
     }
     @Test
-    public void JenkinsGetJenkinsClassPositive(){
+    public void JenkinsGetJenkinsLabelsPositive(){
         given().log().all().contentType("application/json").auth().preemptive().
                 basic(login, password).
                 when().get(baseurl + "/api/json").
-                then().log().all().body("_class", equalTo("hudson.model.Hudson"));
+                then().body("assignedLabels.name", hasItems("master"));
+
+    }
+
+    @Test
+    public void JenkinsGetJenkinsNodeDescriptionPositive(){
+        given().log().all().contentType("application/json").auth().preemptive().
+                basic(login, password).
+                when().get(baseurl + "/api/json").
+                then().body("nodeDescription", equalTo("the master Jenkins node"));
 
     }
 }

@@ -7,9 +7,9 @@ import static org.hamcrest.Matchers.hasItems;
 
 public class JenkinsTest {
 
-    String baseurl = "http://ec2-35-157-74-160.eu-central-1.compute.amazonaws.com:8080";
-    String login = "apitestuser";
-    String password = "12345aA";
+    String baseurl = "http://localhost:8080";
+    String login = "admin";
+    String password = "Defaultpassw0rd";
     String wrongpassword = "12345";
 
     @Test
@@ -17,7 +17,7 @@ public class JenkinsTest {
         given().log().all().contentType("application/json").auth().preemptive().
                 basic(login, password).
                 when().get(baseurl + "/api/json").
-                then().statusCode(200);
+                then().log().all().statusCode(200);
 
     }
     @Test
@@ -51,4 +51,13 @@ public class JenkinsTest {
                 then().body("nodeDescription", equalTo("the master Jenkins node"));
 
     }
+    @Test
+    public void JenkinsGetTestJobPositive() {
+        given().log().all().contentType("application/json").auth().preemptive().
+                basic(login, password).
+                when().get(baseurl + "/api/json").
+                then().body("jobs.name", hasItems("test"));
+    }
+
+
 }
